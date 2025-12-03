@@ -56,7 +56,7 @@
                                         </td>
     
                                         <td class="px-4 py-3 text-center text-sm">
-                                            <button onclick="editPlatform({{ $platform->id }}, '{{ $platform->_name }}',)"
+                                            <button type="button" onclick='editPlatform({{ $platform->id }}, {!! json_encode($platform->platform_name) !!})'
                                                     class="text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
                                                 Edit
                                             </button>
@@ -117,16 +117,18 @@
     </div>
 
     <script>
-        function editPlatform(id, platform name) {
-            document.getElementById('editPlatformModal').classList.remove('hidden');
-            document.getElementById('editPlatformModal').classList.add('flex');
+        function editPlatform(id, platform_name) {
+            const modal = document.getElementById('editPlatformModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
             document.getElementById('editPlatformForm').action = `/platforms/${id}`;
             document.getElementById('edit_platform_name').value = platform_name;
         }
 
-        function closeEditModal() {
-            document.getElementById('editPlatformModal').platformList.add('hidden');
-            document.getElementById('editPlatformModal').platformList.remove('flex');
+        function closeEditPlatformModal() {
+            const modal = document.getElementById('editPlatformModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
         }
     </script>
 </x-layouts.app>

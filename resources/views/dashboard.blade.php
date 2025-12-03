@@ -18,7 +18,7 @@
                     </div>
                     <div class="rounded-full bg-blue-100 p-3 dark:bg-blue-900/30">
                         <svg class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h10a4 4 0 004-4v-5a2 2 0 00-2-2h-2.6a2 2 0 00-1.4.6l-5.2 5.2a2 2 0 00-.6 1.4V17a4 4 0 004 4z" />
                         </svg>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
                     </div>
                     <div class="rounded-full bg-green-100 p-3 dark:bg-green-900/30">
                         <svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m0 10v10l8 4m0-10l8 4" />
                         </svg>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                     </div>
                     <div class="rounded-full bg-purple-100 p-3 dark:bg-purple-900/30">
                         <svg class="h-6 w-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                     </div>
                 </div>
@@ -128,6 +128,7 @@
                                     <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">Release Year</th>
                                     <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">Developer</th>
                                     <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">Publisher</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">Platform</th>
                                     <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">Actions</th>
                                 </tr>
                             </thead>
@@ -139,15 +140,17 @@
                                     <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $game->release_year }}</td>
                                     <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $game->developer }}</td>
                                     <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $game->publisher }}</td>
+                                    <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $game->platform ? $game->platform->platform_name : 'N/A' }}</td>
                                     <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">
-                                        <button
-                                            class="text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-                                            onclick="editGame('{{ $game->id }}', '{{ addslashes($game->title) }}', '{{ $game->release_year }}', '{{ addslashes($game->developer) }}', '{{ addslashes($game->publisher) }}', '{{ $game->platform_id }}')"
-                                        >
+                                        {{ $game->platform ? $game->platform->platform_name : 'N/A' }}  
+                                    </td>
+                                    <td class="px-4 py-3 text-sm">    
+                                        <button type="button" onclick='editGame({{ $game->id }}, {!! json_encode($game->title) !!}, {!! json_encode($game->release_year) !!}, {!! json_encode($game->developer) !!}, {!! json_encode($game->publisher) !!}, {!! json_encode($game->platform_id) !!})'
+                                            class="text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
                                             Edit
                                         </button>
                                         <span class="mx-1 text-neutral-400">|</span>
-                                        <form method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this student?');">
+                                        <form action="{{ route('games.destroy', $game) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this game?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 transition-colors hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">Delete</button>
