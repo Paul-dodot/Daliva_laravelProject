@@ -28,6 +28,13 @@
                         wire:navigate>{{ __('Platforms') }}
                     </flux:navlist.item>
 
+                    <flux:navlist.item
+                        icon="trash"
+                        :href="route('games.trash')"
+                        :current="request()->routeIs('games.trash')"
+                        wire:navigate>{{ __('Trash') }}
+                    </flux:navlist.item>
+
                 </flux:navlist.group>
             </flux:navlist>
 

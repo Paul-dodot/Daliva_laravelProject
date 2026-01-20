@@ -62,7 +62,7 @@
                                             </button>
                                             <span class="mx-1 text-neutral-400">|</span>
                                             <form action="{{ route('platforms.destroy', $platform) }}" method="POST" class="inline"
-                                                  onsubmit="return confirm('Are you sure? This will unassign all students from this course.')">
+                                                  onsubmit="return confirm('Are you sure you want to move this platform to trash?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 transition-colors hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">

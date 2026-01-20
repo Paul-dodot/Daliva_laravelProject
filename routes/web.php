@@ -20,6 +20,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/games', [GameController::class, 'store'])->name('games.store');
     Route::put('/games/{game}', [GameController::class, 'update'])->name('games.update');
     Route::delete('/games/{game}', [GameController::class, 'destroy'])->name('games.destroy');
+    Route::get('/games/trash', [GameController::class, 'trash'])->name('games.trash');
+    Route::patch('/games/{id}/restore', [GameController::class, 'restore'])->name('games.restore');
+    Route::delete('/games/{id}/force-delete', [GameController::class, 'forceDelete'])->name('games.force-delete');
+    Route::get('/games/export', [GameController::class, 'export'])->name('games.export');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -27,6 +31,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('platforms', [PlatformController::class, 'store'])->name('platforms.store');
     Route::put('platforms/{platform}', [PlatformController::class, 'update'])->name('platforms.update');
     Route::delete('platforms/{platform}', [PlatformController::class, 'destroy'])->name('platforms.destroy');
+    Route::get('platforms/trash', [PlatformController::class, 'trash'])->name('platforms.trash');
+    Route::patch('platforms/{id}/restore', [PlatformController::class, 'restore'])->name('platforms.restore');
+    Route::delete('platforms/{id}/force-delete', [PlatformController::class, 'forceDelete'])->name('platforms.force-delete');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {

@@ -36,7 +36,27 @@ class PlatformController extends Controller
 
     public function destroy(Platform $platform)
     {
-        $platform->delete();
-        return redirect()->back()->with('success', 'Platform deleted successfully.');
+        $platform->delete(); // Soft delete now
+        return redirect()->back()->with('success', 'Platform moved to trash successfully.');
+    }
+
+    public function trash()
+    {
+        $trashedPlatforms = Platform::onlyTrashed()->latest()->get();
+        return view('platforms.trash', compact('trashedPlatforms'));
+    }
+
+    public function restore($id)
+    {
+        $platform = Platform::withTrashed()->findOrFail($id);
+        $platform->restore();
+        return redirect()->back()->with('success', 'Platform restored successfully.');
+    }
+
+    public function forceDelete($id)
+    {
+        $platform = Platform::withTrashed()->findOrFail($id);
+        $platform->forceDelete();
+        return redirect()->back()->with('success', 'Platform permanently deleted.');
     }
 }

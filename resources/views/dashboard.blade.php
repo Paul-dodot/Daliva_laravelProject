@@ -59,7 +59,7 @@
                 <!-- Add New Game Form -->
                 <div class="mb-6 rounded-lg border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-700 dark:bg-neutral-900/50">
                     <h2 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">Add New Game</h2>
-                    <form action="{{ route('games.store') }}" method="POST" class="grid gap-4 md:grid-cols-2">
+                    <form action="{{ route('games.store') }}" method="POST" enctype="multipart/form-data" class="grid gap-4 md:grid-cols-2">
                         @csrf 
                         <div>
                             <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">Title</label>
@@ -109,6 +109,14 @@
                         </div>
 
                         <div class="md:col-span-2">
+                            <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">Photo</label>
+                            <input type="file" name="photo" accept="image/*" class="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100">
+                            @error('photo')
+                                <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="md:col-span-2">
                             <button type="submit" class="rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                                 Add Game
                             </button>
@@ -119,11 +127,39 @@
                 <!-- Game List Table -->
                 <div class="flex-1 overflow-auto">
                     <h2 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">Game List</h2>
+
+                    <!-- Search and Filter Form -->
+                    <form method="GET" action="{{ route('dashboard') }}" class="mb-4 flex flex-wrap gap-4">
+                        <div class="flex-1 min-w-64">
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by title..." class="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100">
+                        </div>
+                        <div class="min-w-48">
+                            <select name="platform_id" class="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100">
+                                <option value="">All Platforms</option>
+                                @foreach($platforms as $platform)
+                                    <option value="{{ $platform->id }}" {{ request('platform_id') == $platform->id ? 'selected' : '' }}>
+                                        {{ $platform->platform_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                            Search
+                        </button>
+                        <a href="{{ route('dashboard') }}" class="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-700">
+                            Clear Filters
+                        </a>
+                        <a href="{{ route('games.export', request()->query()) }}" class="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500/20">
+                            Export to PDF
+                        </a>
+                    </form>
+
                     <div class="overflow-x-auto">
                         <table class="w-full min-w-full">
                             <thead>
                                 <tr class="border-b border-neutral-200 bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900/50">
                                     <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">#</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">Photo</th>
                                     <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">Title</th>
                                     <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">Release Year</th>
                                     <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">Developer</th>
@@ -136,21 +172,27 @@
                                 @forelse($games as $game)
                                 <tr class="transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
                                     <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $loop->iteration }}</td>
+                                    <td class="px-4 py-3 text-sm">
+                                        @if($game->photo)
+                                            <img src="{{ asset('storage/' . $game->photo) }}" alt="{{ $game->title }}" class="w-10 h-10 rounded-full object-cover">
+                                        @else
+                                            <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-semibold text-sm">
+                                                {{ strtoupper(substr($game->title, 0, 1)) }}
+                                            </div>
+                                        @endif
+                                    </td>
                                     <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $game->title }}</td>
                                     <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $game->release_year }}</td>
                                     <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $game->developer }}</td>
                                     <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $game->publisher }}</td>
                                     <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $game->platform ? $game->platform->platform_name : 'N/A' }}</td>
-                                    <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">
-                                        {{ $game->platform ? $game->platform->platform_name : 'N/A' }}  
-                                    </td>
                                     <td class="px-4 py-3 text-sm">    
                                         <button type="button" onclick='editGame({{ $game->id }}, {!! json_encode($game->title) !!}, {!! json_encode($game->release_year) !!}, {!! json_encode($game->developer) !!}, {!! json_encode($game->publisher) !!}, {!! json_encode($game->platform_id) !!})'
                                             class="text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
                                             Edit
                                         </button>
                                         <span class="mx-1 text-neutral-400">|</span>
-                                        <form action="{{ route('games.destroy', $game) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this game?');">
+                                        <form action="{{ route('games.destroy', $game) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to move this game to trash?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 transition-colors hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">Delete</button>
@@ -159,7 +201,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-4 py-8 text-center text-sm text-neutral-500 dark:text-neutral-400">
+                                    <td colspan="8" class="px-4 py-8 text-center text-sm text-neutral-500 dark:text-neutral-400">
                                         No games found. Add your first game above!
 
                                     </td>
@@ -178,7 +220,7 @@
         <div class="w-full max-w-2xl rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-800">
             <h2 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">Edit Game</h2>
 
-            <form id="editGameForm" method="POST">
+            <form id="editGameForm" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -216,6 +258,12 @@
                                 <option value="{{ $platform->id }}">{{ $platform->platform_name }}</option>
                             @endforeach
                         </select>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">Photo</label>
+                        <input type="file" id="edit_photo" name="photo" accept="image/*"
+                               class="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100">
                     </div>
                 </div>
 

@@ -4,17 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Game extends Model
 {
-    Use HasFactory;
+    Use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'title',
         'release_year',
         'developer',
         'publisher',
-        'platform_id'
+        'platform_id',
+        'photo'
     ];
 
     public function platform()
